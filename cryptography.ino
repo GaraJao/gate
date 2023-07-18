@@ -5,7 +5,7 @@ String encryptCode(String code, String iv) {
   for (int i = 0; i < CODE_LENGTH; i++)
     code_char[i] = code.c_str()[i];
 
-  AES.set_key((byte *)key.c_str(), 16);
+  AES.set_key((byte *)key, 16);
   AES.cbc_encrypt((byte *)code_char, (byte *)code_char, CODE_LENGTH / 16, (byte *)iv.c_str());
 
   char encrypted_code[1000];
@@ -19,7 +19,7 @@ String decryptCode(String code, String iv) {
   char decrypted_code[code.length()];
   base64_decode((char *)decrypted_code, (char *)code.c_str(), code.length());
 
-  AES.set_key((byte *)key.c_str(), 16);
+  AES.set_key((byte *)key, 16);
   AES.cbc_decrypt((byte *)decrypted_code, (byte *)decrypted_code, CODE_LENGTH / 16, (byte *)iv.c_str());
 
   return decrypted_code;

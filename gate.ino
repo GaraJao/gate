@@ -28,8 +28,8 @@ AES AES;
 Servo servo;
 
 // Code settings
-extern String key;
-extern String iv;
+extern const char *key;
+extern const char *iv;
 
 // Wi-fi settings
 extern const char *SSID;
@@ -87,7 +87,7 @@ void loop() {
     requestGET(path, (char *)response);
 
     if (response[0] != '\0') {
-      DynamicJsonDocument gate(32);
+      DynamicJsonDocument gate(64);
       deserializeJson(gate, response);
 
       int open = gate["provisional_open"];
@@ -101,16 +101,15 @@ void loop() {
         strcat(path, gate_id);
         strcat(path, "/solicitations/valid");
 
-        DynamicJsonDocument status(1024);
+        DynamicJsonDocument status(64);
         status["status"] = open;
 
-        String request;
+        String request = "";
         serializeJson(status, request);
 
         requestPATCH(path, (char *)request.c_str());
       }
     }
-
     previous_time = current_time;
   }
 
@@ -206,6 +205,7 @@ void loop() {
       requestPOST(path, (char *)solicitation.c_str(), (char *)response);
     }
   }
+  ESP.wdtFeed();
 }
 
 // Splits the code into sequence(index 0 of splitted_code), seed(index 1 of splitted_code) and unixtime(index 2 of splitted_code)

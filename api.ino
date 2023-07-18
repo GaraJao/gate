@@ -1,6 +1,6 @@
 // Creation of solicitation object in json format
 String newSolicitation(int message, String code) {
-  DynamicJsonDocument solicitation(1024);
+  DynamicJsonDocument solicitation(256);
 
   solicitation["status"] = getGate();
   solicitation["message"] = message;
