@@ -14,24 +14,22 @@ String newSolicitation(int message, String code) {
 }
 
 //
-void requestGET(char *path_url, char *output) {
+void setDefaultBegin() {
+  char path[200] = "";
+  strcpy(path, server_name);
+  strcat(path, "/gates/");
+  strcat(path, gate_id);
+
+  https.end();
+  https.begin(client, path);
+
+  return;
+}
+
+//
+void requestGET(char *output) {
   if ((WiFi.status() != WL_CONNECTED)) {
     Serial.println("WiFi disconnected");
-    return;
-  }
-
-  WiFiClientSecure client;
-  client.setInsecure();
-
-  HTTPClient https;
-  https.setReuse(false);
-
-  char url[200];
-  strcpy(url, server_name);
-  strcat(url, path_url);
-
-  if (!https.begin(client, url)) {
-    Serial.println("[HTTPS] Could not connect");
     return;
   }
 
@@ -44,7 +42,7 @@ void requestGET(char *path_url, char *output) {
   if (httpsResponse < 0) {
     Serial.print("[HTTPS] ");
     Serial.println(https.errorToString(httpsResponse).c_str());
-    https.end();
+    setDefaultBegin();
     return;
   }
 
@@ -60,18 +58,13 @@ void requestPOST(char *path_url, char *json_data, char *output) {
     return;
   }
 
-  WiFiClientSecure client;
-  client.setInsecure();
-
-  HTTPClient https;
-  https.setReuse(false);
-
   char url[200];
   strcpy(url, server_name);
   strcat(url, path_url);
 
   if (!https.begin(client, url)) {
     Serial.println("[HTTPS] Could not connect");
+    setDefaultBegin();
     return;
   }
 
@@ -84,12 +77,12 @@ void requestPOST(char *path_url, char *json_data, char *output) {
   if (httpsResponse < 0) {
     Serial.print("[HTTPS] ");
     Serial.println(https.errorToString(httpsResponse).c_str());
-    https.end();
+    setDefaultBegin();
     return;
   }
 
   strcpy(output, https.getString().c_str());
-  https.end();
+  setDefaultBegin();
   return;
 }
 
@@ -100,18 +93,13 @@ void requestPATCH(char *path_url, char *json_data) {
     return;
   }
 
-  WiFiClientSecure client;
-  client.setInsecure();
-
-  HTTPClient https;
-  https.setReuse(false);
-
   char url[200];
   strcpy(url, server_name);
   strcat(url, path_url);
 
   if (!https.begin(client, url)) {
     Serial.println("[HTTPS] Could not connect");
+    setDefaultBegin();
     return;
   }
 
@@ -124,12 +112,12 @@ void requestPATCH(char *path_url, char *json_data) {
   if (httpsResponse < 0) {
     Serial.print("[HTTPS] ");
     Serial.println(https.errorToString(httpsResponse).c_str());
-    https.end();
+    setDefaultBegin();
     return;
   }
 
   Serial.println(httpsResponse);
 
-  https.end();
+  setDefaultBegin();
   return;
 }

@@ -19,11 +19,14 @@
 #define SERVO_DEGREES 180
 #define LED_PORT 14
 
-#define REQUEST_INTERVAL 2000
+#define REQUEST_INTERVAL 1000
 
 SoftwareSerial HC12(12, 13);
 RTC_DS1307 RTC;
 AES AES;
+
+WiFiClientSecure client;
+HTTPClient https;
 
 Servo servo;
 
@@ -74,17 +77,19 @@ void setup() {
   Serial.println();
   Serial.print("Conectado | Endereço IP: ");
   Serial.println(WiFi.localIP());
+
+  client.setInsecure();
+
+  setDefaultBegin();
 }
 
 void loop() {
   unsigned long current_time = millis();
 
   if (current_time - previous_time > REQUEST_INTERVAL) {
-    char path[200] = "", response[200] = "";
-    strcpy(path, "/gates/");
-    strcat(path, gate_id);
+    char response[200] = "";
 
-    requestGET(path, (char *)response);
+    requestGET((char *)response);
 
     if (response[0] != '\0') {
       DynamicJsonDocument gate(64);
@@ -113,19 +118,19 @@ void loop() {
     previous_time = current_time;
   }
 
-  if (Serial.availableForWrite()) {
-    String c = Serial.readStringUntil('\n');
+  // if (Serial.availableForWrite()) {
+  //   String c = Serial.readStringUntil('\n');
 
-    if (c[0] == 'a') {
-      switchGate("Teste bem sucedido");
-    } else if (c[0] == 't') {
-      c = strtok((char *)c.c_str(), " ");
-      c = strtok(NULL, " ");
+  //   if (c[0] == 'a') {
+  //     switchGate("Teste bem sucedido");
+  //   } else if (c[0] == 't') {
+  //     c = strtok((char *)c.c_str(), " ");
+  //     c = strtok(NULL, " ");
 
-      RTC.adjust(DateTime(__DATE__, c.c_str()));
-    } else if (c[0] == 'h')
-      printHour();
-  }
+  //     RTC.adjust(DateTime(__DATE__, c.c_str()));
+  //   } else if (c[0] == 'h')
+  //     printHour();
+  // }
 
   if (HC12.available()) {
     DateTime now = RTC.now();
