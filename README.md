@@ -1,8 +1,10 @@
-# GaraJão gate
+<h1 align="center">
+    <img alt="preview" src="https://i.imgur.com/Ia7jGrA.png" width="100%">
+</h1 align="center">
 
-<p align='left'>
-  <img alt='License' src='https://img.shields.io/static/v1?label=license&message=MIT&color=d58453&labelColor=555' />
-  <img alt='version' src='https://img.shields.io/static/v1?label=version&message=v1.0&color=d58453&labelColor=555' />
+<p align='center'>
+  <img alt='License' src='https://img.shields.io/badge/license-mit-1C1E26?style=for-the-badge&labelColor=1C1E26&color=d58453&' />
+  <img alt='version' src='https://img.shields.io/badge/version-1.0-1C1E26?style=for-the-badge&labelColor=1C1E26&color=d58453&' />
 </p>
 
 ##### Create file `secret.ino` and fill in below parameters
